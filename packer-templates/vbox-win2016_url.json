@@ -1,0 +1,45 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+      ],
+      "guest_additions_mode": "{{ user `guest_additions_mode` }}",
+      "guest_os_type": "Windows2016_64",
+      "headless": "{{ user `headless` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "md5",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "shutdown_command": "C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /shutdown",
+      "shutdown_timeout": "15m",
+      "floppy_files": [
+        "answer_files/2016/Autounattend.xml",
+        "scripts/postunattend.xml",
+        "scripts/boxstarter.ps1",
+        "scripts/package.ps1",
+        "scripts/Test-Command.ps1"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "windows2016min-{{.Provider}}.box",
+      "vagrantfile_template": "vagrantfile-windows.template"
+    }
+  ],
+  "variables": {
+    "guest_additions_mode": "attach",
+    "headless": "true",
+    "iso_checksum": "70721288bbcdfe3239d8f8c0fae55f1f",
+    "iso_url": "http://care.dlservice.microsoft.com/dl/download/1/4/9/149D5452-9B29-4274-B6B3-5361DBDA30BC/14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-US.ISO"
+  }
+}
